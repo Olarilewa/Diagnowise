@@ -1,0 +1,20 @@
+{
+  "name": "@diagnowise/core",
+  "version": "0.1.0",
+  "description": "Diagnowise's open-source clinical reasoning engine — provider-agnostic, no dependency on the web app or any specific database.",
+  "type": "module",
+  "main": "dist/src/index.js",
+  "types": "src/index.ts",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "build": "tsc --project tsconfig.json --noEmit false --outDir dist",
+    "test": "npm run build && node --test dist/test/*.test.js"
+  },
+  "dependencies": {
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.11",
+    "typescript": "^5.5.4"
+  }
+}

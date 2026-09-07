@@ -1,0 +1,34 @@
+{
+  "name": "@diagnowise/web",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Diagnowise web application — Next.js frontend + backend API routes.",
+  "//": "Supabase packages are pinned to exact versions rather than ^-ranges: @supabase/supabase-js 2.112.x has a generic-type-resolution regression that silently collapses hand-written (non-generated) Database types to `never` under strictNullChecks. 2.45.4 is verified clean. Re-verify with `npm run typecheck` before bumping either package, or switch to `supabase gen types` output, which doesn't hit this.",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "typecheck": "tsc --noEmit",
+    "pretest": "rm -rf dist-test && npx esbuild test/*.test.ts --bundle --platform=node --format=esm --packages=external --alias:@=. --outdir=dist-test",
+    "test": "node --test dist-test/*.test.js"
+  },
+  "dependencies": {
+    "@diagnowise/core": "*",
+    "@supabase/ssr": "0.5.2",
+    "@supabase/supabase-js": "2.45.4",
+    "lucide-react": "^0.383.0",
+    "next": "^14.2.5",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.11",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "autoprefixer": "^10.4.19",
+    "postcss": "^8.4.39",
+    "tailwindcss": "^3.4.6",
+    "typescript": "^5.5.4"
+  }
+}

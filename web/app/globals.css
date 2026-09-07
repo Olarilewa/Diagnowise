@@ -1,0 +1,52 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+ * Diagnowise design tokens (build doc §06). Single source of truth for
+ * every color used across the app — tailwind.config.ts exposes these as
+ * real utility classes (bg-teal-deep, text-slate, ...) rather than
+ * components reaching for inline styles.
+ */
+:root {
+  --porcelain: #f7f8f7;
+  --white: #ffffff;
+  --graphite: #17201e;
+  --slate: #53605d;
+  --slate-2: #7c8884;
+  --border: #dde3e0;
+  --border-soft: #e9edeb;
+  --teal-deep: #0b5d57;
+  --teal-accent: #16877d;
+  --teal-wash: #eaf3f1;
+  --success: #237a57;
+  --success-wash: #e9f5ef;
+  --warning: #b7791f;
+  --warning-wash: #fbf3e4;
+  --danger: #b83232;
+  --danger-wash: #fceded;
+  --critical: #8f1d1d;
+  --critical-wash: #fbe9e9;
+  --info: #2563a6;
+  --info-wash: #eaf1fa;
+}
+
+html,
+body {
+  background: var(--porcelain);
+  color: var(--graphite);
+}
+
+* {
+  border-color: var(--border);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
