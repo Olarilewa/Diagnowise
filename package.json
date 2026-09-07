@@ -2,9 +2,12 @@
   "name": "diagnowise-platform",
   "private": true,
   "description": "Diagnowise monorepo root. See README.md and docs/ARCHITECTURE.md.",
-  "workspaces": ["web", "core"],
+  "workspaces": [
+    "web",
+    "core"
+  ],
   "scripts": {
-    "build": "npm run build -w core",
+    "build": "npm run build -w core && npm run build -w web",
     "typecheck": "npm run build -w core && npm run typecheck -w core && npm run typecheck -w web",
     "test": "npm run build -w core && npm run test -w core && npm run test -w web"
   }
