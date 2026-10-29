@@ -11,7 +11,8 @@
  * hand against the migration file, not guessed.
  */
 
-export type UserRole = "clinician" | "medical_student" | "hospital_admin" | "researcher";
+export type UserRole = "clinician" | "medical_student" | "hospital_admin" | "researcher" | "patient";
+export type CareScope = "general" | "specialist" | "other";
 export type OrganizationType = "hospital" | "clinic" | "academic" | "other";
 export type Sex = "male" | "female" | "other" | "unspecified";
 export type CaseStatus =
@@ -36,6 +37,8 @@ export interface Organization {
   type: OrganizationType;
   country: string | null;
   created_at: string;
+  care_scope: CareScope | null;
+  care_scope_detail: string | null;
 }
 
 export interface UserProfile {
@@ -179,12 +182,30 @@ export interface AuditLog {
  */
 type Nullable<T> = T | null;
 
+export interface PatientReport {
+  id: string;
+  patient_id: string;
+  summary: string;
+  onset: string | null;
+  severity: "mild" | "moderate" | "severe" | null;
+  details: Record<string, unknown>;
+  created_at: string;
+}
+
+export interface PatientConsent {
+  id: string;
+  patient_id: string;
+  grantee_id: string;
+  granted_at: string;
+  revoked_at: string | null;
+}
+
 export interface Database {
   public: {
     Tables: {
       organizations: {
         Row: Organization;
-        Insert: Partial<Pick<Organization, "id" | "type" | "country" | "created_at">> & Pick<Organization, "name">;
+        Insert: Partial<Pick<Organization, "id" | "type" | "country" | "created_at" | "care_scope" | "care_scope_detail">> & Pick<Organization, "name">;
         Update: Partial<Organization>;
         Relationships: [];
       };
@@ -263,6 +284,18 @@ export interface Database {
         Update: Partial<CaseTimelineEvent>;
         Relationships: [];
       };
+      patient_reports: {
+        Row: PatientReport;
+        Insert: Partial<Pick<PatientReport, "id" | "onset" | "severity" | "details" | "created_at">> & Pick<PatientReport, "patient_id" | "summary">;
+        Update: Partial<PatientReport>;
+        Relationships: [];
+      };
+      patient_consents: {
+        Row: PatientConsent;
+        Insert: Partial<Pick<PatientConsent, "id" | "granted_at" | "revoked_at">> & Pick<PatientConsent, "patient_id" | "grantee_id">;
+        Update: Partial<PatientConsent>;
+        Relationships: [];
+      };
       ai_interactions: {
         Row: AiInteraction;
         Insert: Partial<Pick<AiInteraction, "id" | "created_at">> & Pick<AiInteraction, "case_id" | "model" | "stage" | "input" | "output">;
@@ -278,6 +311,25 @@ export interface Database {
       };
     };
     Views: Record<string, never>;
-    Functions: Record<string, never>;
+    Functions: {
+      revoke_patient_consent: { Args: { consent_id: string }; Returns: undefined };
+      create_organization: {
+        Args: { p_name: string; p_type?: string; p_country?: string | null; p_care_scope?: string | null; p_care_scope_detail?: string | null; p_role?: string };
+        Returns: string;
+      };
+      create_share_code: { Args: Record<PropertyKey, never>; Returns: { share_code: string; valid_until: string }[] };
+      grant_consent_by_code: {
+        Args: { code: string };
+        Returns: { status: "ok" | "already_shared" | "invalid" | "rate_limited"; consent_id: string | null; clinician_name: string | null }[];
+      };
+      my_consents: {
+        Args: Record<PropertyKey, never>;
+        Returns: { consent_id: string; clinician_name: string; granted_at: string; revoked_at: string | null }[];
+      };
+      shared_reports: {
+        Args: Record<PropertyKey, never>;
+        Returns: { report_id: string; patient_name: string; summary: string; onset: string | null; severity: string | null; urgency: string | null; created_at: string }[];
+      };
+    };
   };
 }

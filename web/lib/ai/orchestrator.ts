@@ -16,9 +16,9 @@
 
 import type { SupabaseClient } from "@supabase/supabase-js";
 import {
-  AnthropicProvider,
   NullLogger,
   ReasoningOrchestrator,
+  resolveProviderMap,
   type ClinicalContext,
   type FullAnalysisOutcome,
   type GuardrailViolation,
@@ -27,18 +27,16 @@ import {
 import type { Database } from "@/types/database";
 import { SupabaseAiInteractionLogger } from "./logger";
 
-function getRequiredEnv(name: string): string {
-  const value = process.env[name];
-  if (!value) {
-    throw new Error(`Missing required environment variable: ${name}. Set it before calling into the AI orchestration layer.`);
-  }
-  return value;
-}
-
-function buildAnthropicProvider(): AnthropicProvider {
-  return new AnthropicProvider({
-    apiKey: getRequiredEnv("ANTHROPIC_API_KEY"),
-    model: process.env.ANTHROPIC_MODEL,
+/**
+ * Provider selection is configuration, not code: AI_PROVIDER_DEFAULT and
+ * optional per-stage AI_PROVIDER_<STAGE> variables (see
+ * docs/AI_PROVIDER_ARCHITECTURE.md). With only ANTHROPIC_API_KEY set this
+ * behaves exactly as before. Misconfiguration throws here, naming the
+ * variable, rather than on the first patient case.
+ */
+function buildProviderMap() {
+  return resolveProviderMap(process.env, {
+    onFailover: (e) => console.warn(`AI provider failover: ${e.failedProvider} -> ${e.nextProvider}`),
   });
 }
 
@@ -51,7 +49,7 @@ function buildAnthropicProvider(): AnthropicProvider {
  */
 export function createOrchestrator(supabase: SupabaseClient<Database>): ReasoningOrchestrator {
   const logger = new SupabaseAiInteractionLogger(supabase);
-  return new ReasoningOrchestrator({ default: buildAnthropicProvider() }, logger);
+  return new ReasoningOrchestrator(buildProviderMap(), logger);
 }
 
 /**
@@ -71,7 +69,7 @@ export function createOrchestrator(supabase: SupabaseClient<Database>): Reasonin
  * work — see docs/ARCHITECTURE.md.
  */
 export function createStatelessOrchestrator(): ReasoningOrchestrator {
-  return new ReasoningOrchestrator({ default: buildAnthropicProvider() }, new NullLogger());
+  return new ReasoningOrchestrator(buildProviderMap(), new NullLogger());
 }
 
 /** Builds the `safetyWarnings` shape every /clinical/* response includes, from whichever stages actually ran. */

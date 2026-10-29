@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { ArrowRight, Building2, FlaskConical, Sparkles, Stethoscope, Users } from "lucide-react";
-import { completeOnboarding, type OnboardingInput } from "@/app/actions/auth";
+import { completeOnboarding } from "@/app/actions/auth";
+import type { OnboardingInput } from "@/lib/signup/schemas";
 
 const ROLES = [
   { key: "clinician", label: "Clinician", icon: Stethoscope },

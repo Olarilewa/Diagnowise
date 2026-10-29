@@ -68,7 +68,7 @@ export class AnthropicProvider implements ModelProvider {
 
     if (!response.ok) {
       const body = await response.text().catch(() => "<unreadable body>");
-      throw new ProviderError(`Anthropic API returned ${response.status}: ${body}`, this.name);
+      throw new ProviderError(`Anthropic API returned ${response.status}: ${body}`, this.name, undefined, response.status);
     }
 
     const json = (await response.json()) as AnthropicMessagesResponse;

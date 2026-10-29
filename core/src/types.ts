@@ -20,7 +20,8 @@ export type PipelineStage =
   | "missing_information_analysis"
   | "investigation_considerations"
   | "follow_up_reasoning"
-  | "safety_verification";
+  | "safety_verification"
+  | "patient_explanation";
 
 export type Likelihood = "low" | "moderate" | "high";
 export type RedFlagSeverity = "info" | "warning" | "danger" | "critical";

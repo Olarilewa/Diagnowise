@@ -2,7 +2,7 @@
   "name": "@diagnowise/web",
   "version": "0.1.0",
   "private": true,
-  "description": "Diagnowise web application — Next.js frontend + backend API routes.",
+  "description": "Diagnowise web application \u2014 Next.js frontend + backend API routes.",
   "//": "Supabase packages are pinned to exact versions rather than ^-ranges: @supabase/supabase-js 2.112.x has a generic-type-resolution regression that silently collapses hand-written (non-generated) Database types to `never` under strictNullChecks. 2.45.4 is verified clean. Re-verify with `npm run typecheck` before bumping either package, or switch to `supabase gen types` output, which doesn't hit this.",
   "scripts": {
     "dev": "next dev",
@@ -14,6 +14,8 @@
   },
   "dependencies": {
     "@diagnowise/core": "*",
+    "@fontsource-variable/inter": "^5.0.0",
+    "@fontsource-variable/manrope": "^5.0.0",
     "@supabase/ssr": "0.5.2",
     "@supabase/supabase-js": "2.45.4",
     "lucide-react": "^0.383.0",

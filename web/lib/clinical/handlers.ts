@@ -17,7 +17,7 @@ import { randomUUID } from "node:crypto";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { ClinicalContext, ReasoningOrchestrator } from "@diagnowise/core";
 import type { Database } from "@/types/database";
-import { recordAuditEvent, requireAuth, requireCaseAccess } from "@/lib/security/auth";
+import { recordAuditEvent, requireCaseAccess, requireClinicalRole } from "@/lib/security/auth";
 import { NotFoundError } from "@/lib/utilities/errors";
 import {
   analyzeCaseRequestSchema,
@@ -138,7 +138,7 @@ export async function handleExplainRequest(deps: ClinicalDeps, rawBody: unknown)
    ============================================================ */
 
 export async function handleDifferentialRequest(deps: ClinicalDeps, rawBody: unknown) {
-  await requireAuth(deps.supabase);
+  await requireClinicalRole(deps.supabase);
   const body = validateBody(clinicalContextInputSchema, rawBody);
   const context = toClinicalContext(`stateless-${randomUUID()}`, body);
   const orchestrator = statelessOrchestrator(deps);
@@ -158,7 +158,7 @@ export async function handleDifferentialRequest(deps: ClinicalDeps, rawBody: unk
 }
 
 export async function handleRedFlagsRequest(deps: ClinicalDeps, rawBody: unknown) {
-  await requireAuth(deps.supabase);
+  await requireClinicalRole(deps.supabase);
   const body = validateBody(clinicalContextInputSchema, rawBody);
   const context = toClinicalContext(`stateless-${randomUUID()}`, body);
   const orchestrator = statelessOrchestrator(deps);
@@ -173,7 +173,7 @@ export async function handleRedFlagsRequest(deps: ClinicalDeps, rawBody: unknown
 }
 
 export async function handleMissingInformationRequest(deps: ClinicalDeps, rawBody: unknown) {
-  await requireAuth(deps.supabase);
+  await requireClinicalRole(deps.supabase);
   const body = validateBody(clinicalContextInputSchema, rawBody);
   const context = toClinicalContext(`stateless-${randomUUID()}`, body);
   const orchestrator = statelessOrchestrator(deps);
@@ -195,7 +195,7 @@ export async function handleMissingInformationRequest(deps: ClinicalDeps, rawBod
 }
 
 export async function handleFollowUpRequest(deps: ClinicalDeps, rawBody: unknown) {
-  await requireAuth(deps.supabase);
+  await requireClinicalRole(deps.supabase);
   const body = validateBody(clinicalContextInputSchema, rawBody);
   const context = toClinicalContext(`stateless-${randomUUID()}`, body);
   const orchestrator = statelessOrchestrator(deps);
@@ -217,7 +217,7 @@ export async function handleFollowUpRequest(deps: ClinicalDeps, rawBody: unknown
 }
 
 export async function handleContradictionsRequest(deps: ClinicalDeps, rawBody: unknown) {
-  await requireAuth(deps.supabase);
+  await requireClinicalRole(deps.supabase);
   // A stricter schema than the shared one — workingDiagnosis is required
   // here, since there's nothing to check for contradictions against without it.
   const body = validateBody(contradictionsRequestSchema, rawBody);

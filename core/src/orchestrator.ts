@@ -42,6 +42,8 @@ import { runMissingInformationAnalysis } from "./stages/missing-information.js";
 import { runInvestigationConsiderations } from "./stages/investigations.js";
 import { runFollowUpReasoning } from "./stages/follow-up.js";
 import { runSafetyVerification } from "./safety/safety-verification-stage.js";
+import { runPatientExplanation } from "./stages/patient-explanation.js";
+import type { PatientExplanation } from "./patient-safety/explanation.js";
 
 /**
  * `default` handles every stage unless overridden. Strategy doc §13's
@@ -175,6 +177,20 @@ export class ReasoningOrchestrator {
 
   async runSafetyCheck(context: ClinicalContext, differential: DifferentialItem[]): Promise<StageRunResult<SafetyVerificationResult>> {
     return this.runStage("safety_verification", context.caseId, (p) => runSafetyVerification(p, context, differential));
+  }
+
+  /**
+   * Plain-language explanation and possible diagnoses for a PATIENT. Never part of
+   * runFullAnalysis: it exists only for the patient flow. Fails closed (throws) after
+   * two attempts that do not pass safety validation.
+   */
+  async runPatientExplanation(
+    context: ClinicalContext,
+    normalized: NormalizedClinicalPicture,
+    redFlags: RedFlagFinding[],
+    differential: DifferentialItem[]
+  ): Promise<StageRunResult<PatientExplanation>> {
+    return this.runStage("patient_explanation", context.caseId, (p) => runPatientExplanation(p, context, normalized, redFlags, differential));
   }
 
   /** Runs the full pipeline in order, skipping stages that don't apply. */

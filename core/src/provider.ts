@@ -21,7 +21,19 @@ export interface CompletionResult {
 }
 
 export class ProviderError extends Error {
-  constructor(message: string, public readonly provider: string, public readonly cause?: unknown) {
+  constructor(
+    message: string,
+    public readonly provider: string,
+    public readonly cause?: unknown,
+    /**
+     * HTTP status when the failure was an API response. Undefined for
+     * network-level failures and for malformed-but-200 responses. Lets
+     * FailoverProvider tell "provider is down or rate-limiting" (try the
+     * next one) apart from "our request or credentials are wrong" (every
+     * provider would fail the same way, so surface it loudly instead).
+     */
+    public readonly status?: number
+  ) {
     super(message);
     this.name = "ProviderError";
   }

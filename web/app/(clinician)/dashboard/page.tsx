@@ -1,3 +1,4 @@
+import { redirect } from "next/navigation";
 import Link from "next/link";
 import { AlertTriangle, CalendarClock, ClipboardList, FileText, Plus } from "lucide-react";
 import { getRouteHandlerSupabaseClient } from "@/lib/database/server-client";
@@ -17,6 +18,7 @@ interface CaseRow {
 export default async function DashboardPage() {
   const supabase = getRouteHandlerSupabaseClient();
   const user = await requireAuth(supabase);
+  if (user.profile.role === "hospital_admin") redirect("/hospital");
 
   // RLS already scopes this correctly: a clinician sees their own cases, a
   // hospital_admin sees every case in their organization — no extra

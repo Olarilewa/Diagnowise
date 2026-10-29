@@ -8,6 +8,7 @@ import { signOut } from "@/app/actions/auth";
 const NAV_ITEMS = [
   { href: "/dashboard", label: "Overview" },
   { href: "/cases/new", label: "New Case" },
+  { href: "/patient-reports", label: "Patient reports" },
 ];
 
 export function AppShell({ children, userName }: { children: React.ReactNode; userName: string }) {

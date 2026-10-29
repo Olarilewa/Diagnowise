@@ -70,6 +70,22 @@ export async function requireRole(supabase: Client, allowedRoles: UserRole[]): P
 }
 
 /**
+ * Roles allowed to use the clinician-facing reasoning endpoints (/api/clinical/*).
+ * Patients are deliberately excluded: those endpoints return raw differentials
+ * with named diagnoses, which patients must only ever see through the
+ * patient-safe guidance layer (core/src/patient-safety).
+ */
+export const CLINICAL_ROLES: UserRole[] = ["clinician", "medical_student", "hospital_admin", "researcher"];
+
+export async function requireClinicalRole(supabase: Client): Promise<AuthedUser> {
+  return requireRole(supabase, CLINICAL_ROLES);
+}
+
+export async function requirePatient(supabase: Client): Promise<AuthedUser> {
+  return requireRole(supabase, ["patient"]);
+}
+
+/**
  * Confirms the current user can act on a specific case, per the same rule
  * RLS enforces (assigned clinician, or hospital_admin in that org) — used
  * by route handlers that need to give a real 403 rather than let a query

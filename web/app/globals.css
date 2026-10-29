@@ -19,6 +19,8 @@
   --teal-deep: #0b5d57;
   --teal-accent: #16877d;
   --teal-wash: #eaf3f1;
+  --teal-ink: #07302d;
+  --teal-soft: #b9d9d4;
   --success: #237a57;
   --success-wash: #e9f5ef;
   --warning: #b7791f;
@@ -29,6 +31,26 @@
   --critical-wash: #fbe9e9;
   --info: #2563a6;
   --info-wash: #eaf1fa;
+}
+
+html {
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--teal-soft);
+}
+
+:focus-visible {
+  outline: 2px solid var(--teal-accent);
+  outline-offset: 2px;
+}
+
+/* Form controls draw their own focus ring; don't stack the global outline on top. */
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: none;
 }
 
 html,

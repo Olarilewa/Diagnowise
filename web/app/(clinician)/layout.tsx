@@ -7,6 +7,7 @@ export default async function ClinicianLayout({ children }: { children: React.Re
   const supabase = getRouteHandlerSupabaseClient();
   const user = await getCurrentUser(supabase);
   if (!user) redirect("/sign-in");
+  if (user.profile.role === "patient") redirect("/patient");
   if (!user.profile.specialty) redirect("/onboarding");
 
   return <AppShell userName={user.profile.name}>{children}</AppShell>;
