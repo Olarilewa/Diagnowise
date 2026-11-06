@@ -12,7 +12,7 @@ export function FlowDiagram() {
   }, []);
 
   return (
-    <div className="w-full overflow-x-auto">
+    <div className="w-full overflow-x-auto" role="group" aria-label="Clinical reasoning loop. Scrolls sideways on small screens." tabIndex={0}>
       <div className="flex items-center min-w-[640px] px-2 py-8">
         {FLOW_STAGES.map((stage, i) => {
           const filled = i <= active;
